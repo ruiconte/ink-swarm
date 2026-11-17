@@ -32,6 +32,22 @@ def get(url, tries=6):
     raise RuntimeError(url)
 
 
+def soft_labels(url, H, W, core, T, papyrus):
+    """team grey-level ink map (2.4 um canvas) averaged onto the native canvas, kept inside the fetched blocks"""
+    import tifffile, torch
+    tm = tifffile.imread(io.BytesIO(get(url)))
+    sy, sx = tm.shape[0] / H, tm.shape[1] / W
+    out = np.zeros((H, W), np.uint8)
+    for r0 in range(0, H, 512):
+        r1 = min(r0 + 512, H)
+        a0, a1 = int(r0 * sy), min(int(np.ceil(r1 * sy)), tm.shape[0])
+        strip = torch.from_numpy(tm[a0:a1].astype(np.float32))[None, None]
+        out[r0:r1] = torch.nn.functional.adaptive_avg_pool2d(strip, (r1 - r0, W))[0, 0].round().clamp(0, 255).byte().numpy()
+    m = np.kron(core, np.ones((T, T), bool))[:H, :W] & papyrus
+    soft = np.where(m, out, 0).astype(np.uint8)
+    return {"soft": soft, "sup_soft": m.astype(np.uint8)}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--frac", type=float, default=0.2)
@@ -39,6 +55,8 @@ def main():
     ap.add_argument("--objects", default="0139,0814,0500P2,0009B,0343P,0172")
     ap.add_argument("--val", default=VAL)
     ap.add_argument("--labels_dir", default="/tmp/rv2")
+    ap.add_argument("--soft", action="store_true", help="also store the team's grey-level teacher map on the native grid "
+                    "(labels.npz 'soft', uint8) and a supervision mask that keeps the uncertain band ('sup_soft')")
     ap.add_argument("--seed", type=int, default=-1, help="-1: derived from RUN_NAME, so each rented node fetches a different share")
     a = ap.parse_args()
     t0 = time.time()
@@ -107,9 +125,12 @@ def main():
         with ThreadPoolExecutor(32) as ex:
             nb = sum(ex.map(one, list(zip(*np.nonzero(fetch)))))
         tot += nb
+        extra = {}
+        if a.soft and row.get("teacher_map_s3"):
+            extra = soft_labels(S3 + row["teacher_map_s3"], H, W, core, T, np.asarray(vol[Z // 2]) > 0)
         val = sup.copy() if is_val else np.zeros(0, np.uint8)
         np.savez_compressed(os.path.join(d, "labels.npz"), ink=ink.astype(np.uint8), sup=sup.astype(np.uint8),
-                            val=val.astype(np.uint8) if is_val else val, attrs=json.dumps({"source": url, "object": obj}))
+                            val=val.astype(np.uint8) if is_val else val, attrs=json.dumps({"source": url, "object": obj}), **extra)
         info = dict(segment=name, object=obj, source=url, shape=[Z, H, W], tiles=int(fetch.sum()), val=is_val,
                     ink_px=int(ink.sum()), sup_px=int(sup.sum()), download_gb=round(nb / 1e9, 2))
         json.dump(info, open(os.path.join(d, "info.json"), "w"), indent=1)

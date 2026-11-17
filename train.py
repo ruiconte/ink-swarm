@@ -70,6 +70,9 @@ class Segment:
         self.val = (L["val"] > 0) if L["val"].size else np.zeros_like(self.sup)
         self.ink_eval = self.ink                                # the exam always uses the experts' labels
         dp = os.path.join(d, "dense.npz")
+        self.soft = False
+        if os.environ.get("INK_SOFT") and "soft" in L.files and not (L["val"].size and L["val"].any()):
+            self.ink, self.sup, self.soft = L["soft"], (L["sup_soft"] > 0), True     # grey-level targets, uncertain band kept
         if Segment.LABELS == "dense" and os.path.exists(dp):
             Dn = np.load(dp)
             self.ink, self.sup = Dn["ink"], Dn["sup"]          # validation mask stays the manual one
@@ -111,7 +114,8 @@ class Segment:
         msk = np.zeros((P, P), np.float32)
         if sy1 > sy0 and sx1 > sx0:
             img[:, sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = self.vol[z0:z0 + depth, sy0:sy1, sx0:sx1]
-            lab[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = self.ink[sy0:sy1, sx0:sx1]
+            lab[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = (self.ink[sy0:sy1, sx0:sx1] / 255.0 if self.soft
+                                                         else self.ink[sy0:sy1, sx0:sx1])
             msk[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = self.train_mask[sy0:sy1, sx0:sx1]
         return img, lab, msk
 
