@@ -12,9 +12,9 @@ import torch.nn.functional as F
 import zarr
 
 ROOT = os.environ.get("INK_DATA", os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
-SCROLL_OF = lambda seg: ("0139" if seg.startswith(("pherc0139", "w0")) else "1667" if seg.startswith("pherc1667")
+SCROLL_OF = lambda seg: (seg.split("-")[0] if seg.startswith(("n0", "tpherc")) else "0139" if seg.startswith(("pherc0139", "w0")) else "1667" if seg.startswith("pherc1667")
                          else "Paris4" if seg.startswith("phercparis4") else "0814" if seg.startswith("pherc0814") else seg)
-VAL_SEGMENTS = ("pherc0139-w016", "pherc0814-46527", "pherc1667-w029")
+VAL_SEGMENTS = tuple(os.environ["INK_VAL"].split(",")) if os.environ.get("INK_VAL") else     ("pherc0139-w016", "pherc0814-46527", "pherc1667-w029")
 
 
 def opts():
