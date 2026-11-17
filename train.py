@@ -114,7 +114,7 @@ class Segment:
         msk = np.zeros((P, P), np.float32)
         if sy1 > sy0 and sx1 > sx0:
             img[:, sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = self.vol[z0:z0 + depth, sy0:sy1, sx0:sx1]
-            lab[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = (self.ink[sy0:sy1, sx0:sx1] / 255.0 if self.soft
+            lab[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = (self.ink[sy0:sy1, sx0:sx1] / 255.0 if getattr(self, "soft", False)
                                                          else self.ink[sy0:sy1, sx0:sx1])
             msk[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0] = self.train_mask[sy0:sy1, sx0:sx1]
         return img, lab, msk
