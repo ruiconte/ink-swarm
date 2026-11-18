@@ -1,6 +1,6 @@
 """Paste the ink maps of one HerculeX mosaic (layout group) onto the unrolled sheet, using layout.json positions.
 Argus V3 maps first, reader-v3 maps where Argus has none. Grey display (1st..99.5th percentile).
-usage: mosaic.py LAYOUT_JSON GROUP_OR_PIECE OUT_PNG ROOT [ROOT ...]   (GROUP_OR_PIECE: g136 or unit/piece e.g. rows-0033-0045/6000041)"""
+usage: mosaic.py LAYOUT_JSON GROUP_OR_PIECE OUT_PNG ROOT [ROOT ...]   (GROUP_OR_PIECE: g<group> or <unit>/<piece>, e.g. g12 or rows-0000-0012/7)"""
 import glob, json, os, sys
 import numpy as np
 from PIL import Image
