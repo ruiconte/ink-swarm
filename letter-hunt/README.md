@@ -27,6 +27,13 @@ The tools only rank where to look. Any reading of letters is for a papyrologist 
    forward and reversed, and keeps letter shapes that persist across depths and models. `propose.py` shows each
    persistent spot next to its 5 nearest real papyrus letters.
 
+6. **Join neighbouring pieces.** `mosaic.py` pastes the ink maps of one HerculeX layout group at their positions from
+   HerculeX's `layout.json` (unrolled-sheet millimetres, row/column flips), with no manual adjustment. Lines of writing
+   that continue across piece borders are strong evidence against per-piece artefacts.
+7. **Two-model consensus.** `consensus.py` rank-normalises two independent ink maps (removing any brightness/contrast
+   difference), shows model B histogram-matched to model A, and keeps only what both models rank high (geometric mean).
+   Isolated blobs from one model disappear; strokes seen by both stay.
+
 ## The letter classifier ("Interprète")
 
 - Trained on real papyrus letters: HomerComp (`ext_letters.py`, CC BY-NC) and AL-PUB (`alpub_letters.py`).
