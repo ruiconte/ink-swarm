@@ -4,6 +4,10 @@
 Status: **experimental**. Measured on public, papyrologist-validated letters; results below, including where it
 fails. MIT licence, part of [ink-swarm](https://github.com/ruiconte/ink-swarm).
 
+![Echo of validated letters on the neighbouring layers](remus_echo_example.jpg)
+
+*Public data, PHerc. 0841 w00, Argus V3 ink maps on the same grey scale. Middle: the labelled sheet (yellow outline = team's validated ink labels). Left: the same place 14 layers (~130 um) deeper: the validated **Π** appears again, weaker. Right: 14 layers the other way. Whether this is offset onto the next wrap or the same sheet seen deeper is an open question.*
+
 ## The problem
 
 In a rolled, carbonized Herculaneum scroll the wraps lie pressed against each other for two thousand years. An ink
