@@ -1,0 +1,31 @@
+{
+ "sheets": [
+  -14,
+  0,
+  14
+ ],
+ "page": 0,
+ "page_true_ink_px": 293842,
+ "page_false_ink_px": 141154,
+ "page_auc_proxy": null,
+ "neighbours": {
+  "-14": {
+   "true_shared": 0.388,
+   "true_chance": 0.255,
+   "false_shared": 0.392,
+   "false_chance": 0.263,
+   "echo_strength_on_true": 0.965,
+   "neighbour_stronger_on_true": 0.065
+  },
+  "14": {
+   "true_shared": 0.326,
+   "true_chance": 0.17,
+   "false_shared": 0.307,
+   "false_chance": 0.134,
+   "echo_strength_on_true": 0.919,
+   "neighbour_stronger_on_true": 0.064
+  }
+ },
+ "program_removes_true_ink": 0.063,
+ "program_removes_false_ink": 0.105
+}

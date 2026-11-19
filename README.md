@@ -320,3 +320,7 @@ The result must match `SHA256SUMS` (`858b300d6e9d73d148a8790cda92d5bbd38fad15b3d
 ## License
 
 MIT
+
+## Remus 0.1 (experimental): ink legitimacy across a stack of sheets
+
+Idea and method by Louis De Puyfontaine: decide, for every ink spot of a sheet, whether it really belongs to that sheet or soaked in from a neighbouring wrap, by following motifs through the whole stack of sheets (trend = origin, chance-corrected, slip and anchors, ink moved back in proportion). Measured on public validated letters (PHerc. 0841 w00), including where it still fails. See [](remus/README.md).
